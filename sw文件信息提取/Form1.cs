@@ -226,14 +226,14 @@ namespace sw文件信息提取
                 GetInfo.Get2018(sldFileSummaryInfo);
                 return sldFileSummaryInfo;
             }
-            catch (TargetInvocationException) { }
+            catch (System.Runtime.InteropServices.COMException) { }
 
             try
             {
                 GetInfo.Get2024(sldFileSummaryInfo);
                 return sldFileSummaryInfo;
             }
-            catch (TargetInvocationException) { }
+            catch (System.Runtime.InteropServices.COMException) { }
 
             return sldFileSummaryInfo;
         }
