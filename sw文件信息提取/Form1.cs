@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace sw文件信息提取
 {
@@ -217,9 +218,23 @@ namespace sw文件信息提取
         {
             SLDFileSummaryInfo sldFileSummaryInfo = new SLDFileSummaryInfo
             {
-                FileName = file
+                File = file
             };
-            GetInfo.Get2018(file);
+
+            try
+            {
+                GetInfo.Get2018(sldFileSummaryInfo);
+                return sldFileSummaryInfo;
+            }
+            catch (TargetInvocationException) { }
+
+            try
+            {
+                GetInfo.Get2024(sldFileSummaryInfo);
+                return sldFileSummaryInfo;
+            }
+            catch (TargetInvocationException) { }
+
             return sldFileSummaryInfo;
         }
 
