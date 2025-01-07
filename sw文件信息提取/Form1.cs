@@ -142,6 +142,7 @@ namespace sw文件信息提取
             }
             this.Cursor = Cursors.WaitCursor;
             label_ProgressBarInfo.Text = "正在打开SolidWorks";
+            progressBar1.Value = 0;
 
             ListBox tempListBox = new CheckedListBox();
             foreach (var item in checkedListBox1.Items)
