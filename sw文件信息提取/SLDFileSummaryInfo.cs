@@ -8,7 +8,7 @@ namespace sw文件信息提取
 {
     public class SLDFileSummaryInfo
     {
-        public string FileName { get; set; }
+        public string File { get; set; }
         public string Title { get; set; }
         public string Subject { get; set; }
         public string Author { get; set; }

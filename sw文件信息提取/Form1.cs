@@ -10,10 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SldWorks;
-using SwConst;
 using System.Threading;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace sw文件信息提取
 {
@@ -219,29 +218,26 @@ namespace sw文件信息提取
         {
             SLDFileSummaryInfo sldFileSummaryInfo = new SLDFileSummaryInfo
             {
-                FileName = file
+                File = file
             };
-            SldWorks.SldWorks swApp = new SldWorks.SldWorks();
-            swApp.Visible = true;
-            ModelDoc2 swModel = (ModelDoc2)swApp.OpenDoc(file, (int)swDocumentTypes_e.swDocPART);
-            if (swModel == null)
+
+            try
             {
+                GetInfo.Get2018(sldFileSummaryInfo);
                 return sldFileSummaryInfo;
             }
-            sldFileSummaryInfo.Title = swModel.SummaryInfo[(int)swSummInfoField_e.swSumInfoTitle];
-            sldFileSummaryInfo.Subject = swModel.SummaryInfo[(int)swSummInfoField_e.swSumInfoSubject];
-            sldFileSummaryInfo.Author = swModel.SummaryInfo[(int)swSummInfoField_e.swSumInfoAuthor];
-            sldFileSummaryInfo.Keywords = swModel.SummaryInfo[(int)swSummInfoField_e.swSumInfoKeywords];
-            sldFileSummaryInfo.Comment = swModel.SummaryInfo[(int)swSummInfoField_e.swSumInfoComment];
-            sldFileSummaryInfo.SavedBy = swModel.SummaryInfo[(int)swSummInfoField_e.swSumInfoSavedBy];
-            sldFileSummaryInfo.DateCreated = swModel.SummaryInfo[(int)swSummInfoField_e.swSumInfoCreateDate];
-            sldFileSummaryInfo.DateSaved = swModel.SummaryInfo[(int)swSummInfoField_e.swSumInfoSaveDate];
-            sldFileSummaryInfo.DateCreated2 = swModel.SummaryInfo[(int)swSummInfoField_e.swSumInfoCreateDate2];
-            sldFileSummaryInfo.DateSaved2 = swModel.SummaryInfo[(int)swSummInfoField_e.swSumInfoSaveDate2];
+            catch (System.Runtime.InteropServices.COMException) { }
 
-            swApp.CloseDoc(file);
+            try
+            {
+                GetInfo.Get2024(sldFileSummaryInfo);
+                return sldFileSummaryInfo;
+            }
+            catch (System.Runtime.InteropServices.COMException) { }
+
             return sldFileSummaryInfo;
         }
+
         private void button4_Click(object sender, EventArgs e)
         {
             if (saveFileDialog1.ShowDialog() != DialogResult.OK)
