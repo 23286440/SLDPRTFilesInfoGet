@@ -479,14 +479,5 @@ namespace sw文件信息提取
             }
             label_Count.Text = $"共计:{checkedListBox1.Items.Count}项";
         }
-
-        private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-        }
-
-        private void checkedListBox1_SelectedValueChanged(object sender, EventArgs e)
-        {
-            label_Count.Text = $"共计:{checkedListBox1.Items.Count}项";
-        }
     }
 }
