@@ -36,6 +36,10 @@
             this.button3 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label_ProgressBarInfo = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.button9 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
@@ -52,9 +56,12 @@
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button4 = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.button9 = new System.Windows.Forms.Button();
+            this.backgroundWorker_AddFiles = new System.ComponentModel.BackgroundWorker();
+            this.backgroundWorker_Analyse = new System.ComponentModel.BackgroundWorker();
+            this.button10 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -125,6 +132,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.panel1);
             this.tabPage1.Controls.Add(this.button9);
             this.tabPage1.Controls.Add(this.button8);
             this.tabPage1.Controls.Add(this.button7);
@@ -138,6 +146,47 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "文件列表";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.label_ProgressBarInfo);
+            this.panel1.Controls.Add(this.progressBar1);
+            this.panel1.Location = new System.Drawing.Point(6, 497);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1131, 32);
+            this.panel1.TabIndex = 12;
+            this.panel1.Visible = false;
+            // 
+            // label_ProgressBarInfo
+            // 
+            this.label_ProgressBarInfo.AutoSize = true;
+            this.label_ProgressBarInfo.Location = new System.Drawing.Point(3, 14);
+            this.label_ProgressBarInfo.Name = "label_ProgressBarInfo";
+            this.label_ProgressBarInfo.Size = new System.Drawing.Size(170, 18);
+            this.label_ProgressBarInfo.TabIndex = 8;
+            this.label_ProgressBarInfo.Text = "正在打开SolidWorks";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.progressBar1.Location = new System.Drawing.Point(0, 0);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(1131, 32);
+            this.progressBar1.Step = 1;
+            this.progressBar1.TabIndex = 7;
+            // 
+            // button9
+            // 
+            this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button9.Location = new System.Drawing.Point(1332, 435);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(115, 44);
+            this.button9.TabIndex = 11;
+            this.button9.Text = "全选";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // button8
             // 
@@ -280,22 +329,37 @@
             this.saveFileDialog1.FileName = "SLD文件信息摘要";
             this.saveFileDialog1.Filter = "CSV 文件|*.csv|所有文件|*.*";
             // 
-            // button9
+            // backgroundWorker_AddFiles
             // 
-            this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button9.Location = new System.Drawing.Point(1332, 435);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(115, 44);
-            this.button9.TabIndex = 11;
-            this.button9.Text = "全选";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
+            this.backgroundWorker_AddFiles.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_AddFiles_DoWork);
+            this.backgroundWorker_AddFiles.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_AddFiles_RunWorkerCompleted);
+            // 
+            // backgroundWorker_Analyse
+            // 
+            this.backgroundWorker_Analyse.WorkerReportsProgress = true;
+            this.backgroundWorker_Analyse.WorkerSupportsCancellation = true;
+            this.backgroundWorker_Analyse.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_Analyse_DoWork);
+            this.backgroundWorker_Analyse.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_Analyse_ProgressChanged);
+            this.backgroundWorker_Analyse.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_Analyse_RunWorkerCompleted);
+            // 
+            // button10
+            // 
+            this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button10.Enabled = false;
+            this.button10.Location = new System.Drawing.Point(1237, 12);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(115, 44);
+            this.button10.TabIndex = 7;
+            this.button10.Text = "停止";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1485, 691);
+            this.Controls.Add(this.button10);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.button3);
@@ -305,6 +369,8 @@
             this.Text = "sw文件信息提取";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
@@ -338,6 +404,12 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
+        private System.ComponentModel.BackgroundWorker backgroundWorker_AddFiles;
+        private System.ComponentModel.BackgroundWorker backgroundWorker_Analyse;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label_ProgressBarInfo;
+        private System.Windows.Forms.Button button10;
     }
 }
 

@@ -233,7 +233,8 @@ namespace sw文件信息提取
             {
                 return;
             }
-            AddFiles(openFileDialog1.FileNames);
+            this.Cursor = Cursors.WaitCursor;
+            backgroundWorker_AddFiles.RunWorkerAsync(openFileDialog1.FileNames);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -242,23 +243,54 @@ namespace sw文件信息提取
             {
                 return;
             }
-            AddFiles(Directory.GetFiles(folderBrowserDialog1.SelectedPath, "*.*", SearchOption.AllDirectories));
+            this.Cursor = Cursors.WaitCursor;
+            backgroundWorker_AddFiles.RunWorkerAsync(Directory.GetFiles(folderBrowserDialog1.SelectedPath, "*.*", SearchOption.AllDirectories));
         }
 
-        private void AddFiles(string[] files)
+        private void backgroundWorker_AddFiles_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (e.Argument is string[] files)
+            {
+                CheckedListBox tempListBox = new CheckedListBox();
+                AddFiles(files, tempListBox);
+                e.Result = tempListBox;
+            }
+            else
+            {
+                throw new ArgumentException($"传入了非预期数据类型{e.Argument.GetType()}");
+            }
+        }
+
+        private void backgroundWorker_AddFiles_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Result is CheckedListBox tempListBox)
+            {
+                foreach (var item in tempListBox.Items)
+                {
+                    checkedListBox1.Items.Add(item, true);
+                }
+            }
+            else
+            {
+                throw new ArgumentException($"数据类型非预期数据类型：{e.Result.GetType()}");
+            }
+            this.Cursor = Cursors.Default;
+        }
+
+        private void AddFiles(string[] files, CheckedListBox tempListBox)
         {
             foreach (string file in files)
             {
                 if (Path.GetExtension(file).Equals(".SLDPRT", StringComparison.OrdinalIgnoreCase))
                 {
-                    var item = checkedListBox1.Items.Add(file);
-                    checkedListBox1.SetItemChecked(item, true);
+                    int itemIndex = tempListBox.Items.Add(file);
+                    tempListBox.SetItemChecked(itemIndex, true);
                 }
                 else
                 {
                     try
                     {
-                        ExtractAndAddFiles(file);
+                        ExtractAndAddFiles(file, tempListBox);
                     }
                     catch (IOException ex)
                     {
@@ -268,7 +300,7 @@ namespace sw文件信息提取
             }
         }
 
-        private void ExtractAndAddFiles(string file)
+        private void ExtractAndAddFiles(string file, CheckedListBox tempListBox)
         {
             using (ArchiveExtractor archiveExtractor = new ArchiveExtractor(file))
             {
@@ -276,9 +308,9 @@ namespace sw文件信息提取
                 {
                     return;
                 }
-                string archiveExtractorTempPath = Path.Combine(sldFilesPath,Path.GetFileNameWithoutExtension(file));
+                string archiveExtractorTempPath = Path.Combine(sldFilesPath, Path.GetFileNameWithoutExtension(file));
                 archiveExtractorTempPath = archiveExtractor.ExtractArchive(archiveExtractorTempPath);
-                AddFiles(Directory.GetFiles(archiveExtractorTempPath, "*.*", SearchOption.AllDirectories));
+                AddFiles(Directory.GetFiles(archiveExtractorTempPath, "*.*", SearchOption.AllDirectories), tempListBox);
             }
         }
 
@@ -290,17 +322,79 @@ namespace sw文件信息提取
                 return;
             }
             this.Cursor = Cursors.WaitCursor;
-            List<SLDFileSummaryInfo> sldFileSummaryInfos = new List<SLDFileSummaryInfo>();
-            foreach (string file in checkedListBox1.CheckedItems)
+            label_ProgressBarInfo.Text = "正在打开SolidWorks";
+
+            ListBox tempListBox = new CheckedListBox();
+            foreach (var item in checkedListBox1.Items)
             {
-                Trace.WriteLine($"正在分析：{file}");
-                sldFileSummaryInfos.Add(GetFileSummaryInfo(file));
+                tempListBox.Items.Add(item);
             }
-            dataGridView1.DataSource = sldFileSummaryInfos;
-            this.Cursor = Cursors.Default;
-            button4_Click(sender, e);
+            backgroundWorker_Analyse.RunWorkerAsync(tempListBox);
+            panel1.Visible = true;
+            button10.Enabled = true;
+        }
+        private void button10_Click(object sender, EventArgs e)
+        {
+            backgroundWorker_Analyse.CancelAsync();
+            button10.Enabled = false;
+        }
+        private void backgroundWorker_Analyse_DoWork(object sender, DoWorkEventArgs e)
+        {
+            List<SLDFileSummaryInfo> sldFileSummaryInfos = new List<SLDFileSummaryInfo>();
+            if (e.Argument is ListBox items)
+            {
+                for (int i = 0; i < items.Items.Count; i++)
+                {
+                    if (backgroundWorker_Analyse.CancellationPending)
+                    {
+                        backgroundWorker_Analyse.ReportProgress(progressBar1.Maximum, "已取消");
+                        e.Result = sldFileSummaryInfos;
+                        return;
+                    }
+                    string file = items.Items[i].ToString();
+                    SLDFileSummaryInfo sldFileSummaryInfo = GetFileSummaryInfo(file);
+                    sldFileSummaryInfos.Add(sldFileSummaryInfo);
+                    backgroundWorker_Analyse.ReportProgress((i + 1) * 100 / items.Items.Count, $"已完成：{file}");
+                }
+                backgroundWorker_Analyse.ReportProgress(progressBar1.Maximum, "已完成所有文件");
+                e.Result = sldFileSummaryInfos;
+            }
+            else
+            {
+                throw new ArgumentException($"传入了非预期数据类型{e.Argument.GetType()}");
+            }
         }
 
+        private void backgroundWorker_Analyse_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
+            if (e.UserState is string file)
+            {
+                label_ProgressBarInfo.Text = file;
+            }
+            else
+            {
+                throw new ArgumentException($"数据类型非预期数据类型：{e.UserState.GetType()}");
+            }
+        }
+        private void backgroundWorker_Analyse_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            button10.Enabled = false;
+            this.Cursor = Cursors.Default;
+
+            if (e.Result is List<SLDFileSummaryInfo> sldFileSummaryInfos)
+            {
+                dataGridView1.DataSource = sldFileSummaryInfos;
+            }
+            else
+            {
+                throw new ArgumentException($"数据类型非预期数据类型：{e.Result.GetType()}");
+            }
+
+            tabControl1.SelectedTab = tabPage2;
+            button4_Click(sender, e);
+            panel1.Visible = false;
+        }
         private SLDFileSummaryInfo GetFileSummaryInfo(string file)
         {
             SLDFileSummaryInfo sldFileSummaryInfo = new SLDFileSummaryInfo();
@@ -342,7 +436,8 @@ namespace sw文件信息提取
             try
             {
                 File.WriteAllText(saveFileDialog1.FileName, stringBuilder.ToString());
-            }catch(IOException ex)
+            }
+            catch (IOException ex)
             {
                 MessageBox.Show(ex.Message, "保存文件时出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -377,7 +472,7 @@ namespace sw文件信息提取
             {
                 checkedListBox1.SetItemChecked(i, true);
             }
-
         }
+
     }
 }
