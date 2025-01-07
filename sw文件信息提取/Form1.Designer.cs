@@ -36,6 +36,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label_Count = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label_ProgressBarInfo = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -105,6 +106,8 @@
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.Size = new System.Drawing.Size(1320, 529);
             this.checkedListBox1.TabIndex = 2;
+            this.checkedListBox1.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBox1_ItemCheck);
+            this.checkedListBox1.SelectedValueChanged += new System.EventHandler(this.checkedListBox1_SelectedValueChanged);
             // 
             // button3
             // 
@@ -132,6 +135,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label_Count);
             this.tabPage1.Controls.Add(this.panel1);
             this.tabPage1.Controls.Add(this.button9);
             this.tabPage1.Controls.Add(this.button8);
@@ -146,6 +150,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "文件列表";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label_Count
+            // 
+            this.label_Count.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label_Count.AutoSize = true;
+            this.label_Count.Location = new System.Drawing.Point(1339, 153);
+            this.label_Count.Name = "label_Count";
+            this.label_Count.Size = new System.Drawing.Size(89, 18);
+            this.label_Count.TabIndex = 13;
+            this.label_Count.Text = "共计：0项";
             // 
             // panel1
             // 
@@ -369,6 +383,7 @@
             this.Text = "sw文件信息提取";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
@@ -410,6 +425,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label_ProgressBarInfo;
         private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Label label_Count;
     }
 }
 

@@ -274,6 +274,7 @@ namespace sw文件信息提取
             {
                 throw new ArgumentException($"数据类型非预期数据类型：{e.Result.GetType()}");
             }
+            label_Count.Text = $"共计:{checkedListBox1.Items.Count}项";
             this.Cursor = Cursors.Default;
         }
 
@@ -445,6 +446,7 @@ namespace sw文件信息提取
         private void button5_Click(object sender, EventArgs e)
         {
             checkedListBox1.Items.Clear();
+            label_Count.Text = $"共计:{checkedListBox1.Items.Count}项";
         }
         private void button6_Click(object sender, EventArgs e)
         {
@@ -452,10 +454,12 @@ namespace sw文件信息提取
             {
                 checkedListBox1.Items.Remove(checkedListBox1.CheckedItems[i]);
             }
+            label_Count.Text = $"共计:{checkedListBox1.Items.Count}项";
         }
         private void button7_Click(object sender, EventArgs e)
         {
             checkedListBox1.ClearSelected();
+            label_Count.Text = $"共计:{checkedListBox1.Items.Count}项";
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -464,6 +468,7 @@ namespace sw文件信息提取
             {
                 checkedListBox1.SetItemChecked(i, !checkedListBox1.GetItemChecked(i));
             }
+            label_Count.Text = $"共计:{checkedListBox1.Items.Count}项";
         }
 
         private void button9_Click(object sender, EventArgs e)
@@ -472,7 +477,16 @@ namespace sw文件信息提取
             {
                 checkedListBox1.SetItemChecked(i, true);
             }
+            label_Count.Text = $"共计:{checkedListBox1.Items.Count}项";
         }
 
+        private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+        }
+
+        private void checkedListBox1_SelectedValueChanged(object sender, EventArgs e)
+        {
+            label_Count.Text = $"共计:{checkedListBox1.Items.Count}项";
+        }
     }
 }
