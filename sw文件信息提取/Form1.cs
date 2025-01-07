@@ -251,7 +251,8 @@ namespace sw文件信息提取
             {
                 if (Path.GetExtension(file).Equals(".SLDPRT", StringComparison.OrdinalIgnoreCase))
                 {
-                    checkedListBox1.Items.Add(file);
+                    var item = checkedListBox1.Items.Add(file);
+                    checkedListBox1.SetItemChecked(item, true);
                 }
                 else
                 {
@@ -276,9 +277,14 @@ namespace sw文件信息提取
 
         private void button3_Click(object sender, EventArgs e)
         {
+            if (checkedListBox1.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("请至少选择一个文件", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             this.Cursor = Cursors.WaitCursor;
             List<SLDFileSummaryInfo> sldFileSummaryInfos = new List<SLDFileSummaryInfo>();
-            foreach (string file in checkedListBox1.Items)
+            foreach (string file in checkedListBox1.CheckedItems)
             {
                 Trace.WriteLine($"正在分析：{file}");
                 sldFileSummaryInfos.Add(GetFileSummaryInfo(file));
@@ -325,7 +331,14 @@ namespace sw文件信息提取
             {
                 stringBuilder.Append($"{row.Cells[0].Value},{row.Cells[1].Value},{row.Cells[2].Value},{row.Cells[3].Value},{row.Cells[4].Value},{row.Cells[5].Value},{row.Cells[6].Value},{row.Cells[7].Value},{row.Cells[8].Value},{row.Cells[9].Value},{row.Cells[10].Value}\n");
             }
-            File.WriteAllText(saveFileDialog1.FileName, stringBuilder.ToString());
+
+            try
+            {
+                File.WriteAllText(saveFileDialog1.FileName, stringBuilder.ToString());
+            }catch(IOException ex)
+            {
+                MessageBox.Show(ex.Message, "保存文件时出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void button5_Click(object sender, EventArgs e)
         {
@@ -349,6 +362,15 @@ namespace sw文件信息提取
             {
                 checkedListBox1.SetItemChecked(i, !checkedListBox1.GetItemChecked(i));
             }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < checkedListBox1.Items.Count; i++)
+            {
+                checkedListBox1.SetItemChecked(i, true);
+            }
+
         }
     }
 }
