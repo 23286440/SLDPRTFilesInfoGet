@@ -155,9 +155,9 @@
             this.label_Count.AutoSize = true;
             this.label_Count.Location = new System.Drawing.Point(1339, 153);
             this.label_Count.Name = "label_Count";
-            this.label_Count.Size = new System.Drawing.Size(89, 18);
+            this.label_Count.Size = new System.Drawing.Size(80, 18);
             this.label_Count.TabIndex = 13;
-            this.label_Count.Text = "共计：0项";
+            this.label_Count.Text = "共计:0项";
             // 
             // panel1
             // 
@@ -173,6 +173,7 @@
             // 
             // label_ProgressBarInfo
             // 
+            this.label_ProgressBarInfo.AutoEllipsis = true;
             this.label_ProgressBarInfo.AutoSize = true;
             this.label_ProgressBarInfo.Location = new System.Drawing.Point(3, 14);
             this.label_ProgressBarInfo.Name = "label_ProgressBarInfo";
@@ -396,7 +397,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
@@ -424,6 +424,7 @@
         private System.Windows.Forms.Label label_ProgressBarInfo;
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Label label_Count;
+        private System.Windows.Forms.CheckedListBox checkedListBox1;
     }
 }
 
