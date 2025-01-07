@@ -256,7 +256,14 @@ namespace sw文件信息提取
                 }
                 else
                 {
-                    ExtractAndAddFiles(file);
+                    try
+                    {
+                        ExtractAndAddFiles(file);
+                    }
+                    catch (IOException ex)
+                    {
+                        MessageBox.Show(ex.Message, "解压文件时出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
