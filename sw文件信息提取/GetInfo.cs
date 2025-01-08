@@ -1,6 +1,4 @@
-﻿using SolidWorks.Interop.sldworks;
-using SolidWorks.Interop.swconst;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,7 +41,7 @@ namespace sw文件信息提取
         {
             SldWorks2024.SldWorks swApp = new SldWorks2024.SldWorks();
             swApp.Visible = true;
-            ModelDoc2 swModel = (ModelDoc2)swApp.OpenDoc(sldFileSummaryInfo.File, (int)swDocumentTypes_e.swDocPART);
+            SldWorks2024.ModelDoc2 swModel = (SldWorks2024.ModelDoc2)swApp.OpenDoc(sldFileSummaryInfo.File, (int)SwConst2024.swDocumentTypes_e.swDocPART);
             if (swModel == null)
             {
                 return;

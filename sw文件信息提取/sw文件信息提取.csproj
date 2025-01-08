@@ -40,12 +40,12 @@
     <Reference Include="SharpCompress, Version=0.38.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpCompress.0.38.0\lib\net462\SharpCompress.dll</HintPath>
     </Reference>
-    <Reference Include="SolidWorks.Interop.sldworks">
-      <HintPath>..\packages\SolidWorks.2018\SolidWorks.Interop.sldworks.dll</HintPath>
+    <Reference Include="SolidWorks.Interop.sldworks.2018">
+      <HintPath>..\packages\SolidWorks.API\SolidWorks.Interop.sldworks.2018.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="SolidWorks.Interop.swconst">
-      <HintPath>..\packages\SolidWorks.2018\SolidWorks.Interop.swconst.dll</HintPath>
+    <Reference Include="SolidWorks.Interop.swconst.2018">
+      <HintPath>..\packages\SolidWorks.API\SolidWorks.Interop.swconst.2018.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
